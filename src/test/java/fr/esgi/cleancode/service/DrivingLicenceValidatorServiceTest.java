@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,8 +27,7 @@ public class DrivingLicenceValidatorServiceTest {
     @NullAndEmptySource
     void should_not_validated(String securitySocialNumber) {
         val drivingLicence =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
-        val isValidated = service.isValidSSNumber(drivingLicence);
-        assertThat(isValidated).containsInvalidInstanceOf(InvalidDriverSocialSecurityNumberException.class);
+        assertThatExceptionOfType(InvalidDriverSocialSecurityNumberException.class).isThrownBy(() -> service.isValidSSNumber(drivingLicence));
     }
 
 }
