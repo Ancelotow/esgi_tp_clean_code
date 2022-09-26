@@ -27,7 +27,7 @@ public class DrivingLicenceSaveServiceTest {
     private InMemoryDatabase database;
 
     @Mock
-    private DrivingLicenceValidatorService serviceValidator;
+    private DrivingLicenceIdGenerationService serviceIdGenerator;
 
     @Test
     void should_check_return() {
@@ -36,12 +36,14 @@ public class DrivingLicenceSaveServiceTest {
         final var drivingLicense = DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).id(id).build();
 
         when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
+        when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
 
         final var actual = service.save(drivingLicense);
 
         assertThat(actual).isEqualTo(drivingLicense);
         verify(database).findById(id);
         verifyNoMoreInteractions(database);
+        verifyNoMoreInteractions(serviceIdGenerator);
     }
 
     @Test
@@ -51,12 +53,14 @@ public class DrivingLicenceSaveServiceTest {
         final var drivingLicense = DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).id(id).build();
 
         when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
+        when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
 
         final var actual = service.save(drivingLicense);
 
         assertThat(actual.getAvailablePoints()).isEqualTo(12);
         verify(database).findById(id);
         verifyNoMoreInteractions(database);
+        verifyNoMoreInteractions(serviceIdGenerator);
     }
 
 }
