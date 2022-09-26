@@ -6,11 +6,8 @@ import fr.esgi.cleancode.model.DrivingLicence;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @RequiredArgsConstructor
-public class DrivingLicenceSaveService {
+public class DrivingLicenceCreatorService {
 
     private final InMemoryDatabase database;
 

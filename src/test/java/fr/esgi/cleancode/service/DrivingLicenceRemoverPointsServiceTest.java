@@ -1,11 +1,10 @@
 package fr.esgi.cleancode.service;
 
+import fr.esgi.cleancode.database.InMemoryDatabase;
 import fr.esgi.cleancode.exception.InvalidDriverSocialSecurityNumberException;
 import fr.esgi.cleancode.model.DrivingLicence;
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,13 +17,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class DrivingLicenceRemovePointsServiceTest {
+public class DrivingLicenceRemoverPointsServiceTest {
 
     @InjectMocks
-    private final DrivingLicenceRemovePointsService service;
+    private final DrivingLicenceRemoverPointsService service;
 
     @Mock
     private DrivingLicenceFinderService serviceFinder;
+
+    @Mock
+    private InMemoryDatabase database;
 
     @ParameterizedTest
     @ValueSource(ints = {2, 12, 19})
@@ -34,11 +36,13 @@ public class DrivingLicenceRemovePointsServiceTest {
         final var drivingLicense = DrivingLicence.builder().id(id).driverSocialSecurityNumber(securitySocialNumber).build();
 
         when(serviceFinder.findById(id)).thenReturn(Optional.ofNullable(drivingLicense));
+        when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
 
         final var actual = service.removePoints(points, id);
 
         assertThat(actual.getAvailablePoints()).isGreaterThanOrEqualTo(0);
         verifyNoMoreInteractions(serviceFinder);
+        verifyNoMoreInteractions(database);
 
     }
 
