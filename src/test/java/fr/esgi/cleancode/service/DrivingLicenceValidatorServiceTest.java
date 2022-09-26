@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.validate;
 
 @ExtendWith(MockitoExtension.class)
-public class DrivingLicenceValidatorService {
+public class DrivingLicenceValidatorServiceTest {
 
     private final DrivingLicenceValidatorService service = new DrivingLicenceValidatorService();
 
