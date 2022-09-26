@@ -34,39 +34,19 @@ public class DrivingLicenceSaveServiceTest {
 
     @Test
     void should_check_return() {
+        final var id = UUID.randomUUID();
         String securitySocialNumber = "123456789123456";
-        val id = new DrivingLicenceIdGenerationService().generateNewDrivingLicenceId();
-        final var drivingLicense = DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).id(id).build();
+        final var drivingLicense = DrivingLicence.builder().id(id).driverSocialSecurityNumber(securitySocialNumber).build();
 
-        when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
         when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
         when(serviceValidator.isValidSSNumber(drivingLicense)).thenReturn(true);
+        when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
 
         final var actual = service.save(drivingLicense);
 
         assertThat(actual).isEqualTo(drivingLicense);
-        verify(database).findById(id);
+        verify(database).save(id, drivingLicense);
         verifyNoMoreInteractions(database);
-        verifyNoMoreInteractions(serviceIdGenerator);
-        verifyNoMoreInteractions(serviceValidator);
-    }
-
-    @Test
-    void should_check_twelve_point() {
-        String securitySocialNumber = "123456789123456";
-        val id = new DrivingLicenceIdGenerationService().generateNewDrivingLicenceId();
-        final var drivingLicense = DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).id(id).build();
-
-        when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
-        when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
-        when(serviceValidator.isValidSSNumber(drivingLicense)).thenReturn(true);
-
-        final var actual = service.save(drivingLicense);
-
-        assertThat(actual.getAvailablePoints()).isEqualTo(12);
-        verify(database).findById(id);
-        verifyNoMoreInteractions(database);
-        verifyNoMoreInteractions(serviceIdGenerator);
         verifyNoMoreInteractions(serviceValidator);
     }
 
