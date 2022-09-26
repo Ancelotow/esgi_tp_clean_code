@@ -7,9 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.validate;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DrivingLicenceValidatorServiceTest {
@@ -19,15 +18,15 @@ public class DrivingLicenceValidatorServiceTest {
     @Test
     void should_validated() {
         String securitySocialNumber = "123456789123456";
-        val license =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
-        assertThat(service.isValidSSNumber(license)).isTrue();
+        val drivingLicence =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
+        assertThat(service.isValidSSNumber(drivingLicence)).isTrue();
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     void should_not_validated(String securitySocialNumber) {
-        val license =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
-        val isValidated = service.isValidSSNumber(license);
+        val drivingLicence =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
+        val isValidated = service.isValidSSNumber(drivingLicence);
         assertThat(isValidated).containsInvalidInstanceOf(InvalidDriverSocialSecurityNumberException.class);
     }
 
