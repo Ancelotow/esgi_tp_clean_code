@@ -50,4 +50,22 @@ public class DrivingLicenceSaveServiceTest {
         verifyNoMoreInteractions(serviceValidator);
     }
 
+    @Test
+    void should_check_twelve_point() {
+        final var id = UUID.randomUUID();
+        String securitySocialNumber = "123456789123456";
+        final var drivingLicense = DrivingLicence.builder().id(id).driverSocialSecurityNumber(securitySocialNumber).build();
+
+        when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
+        when(serviceValidator.isValidSSNumber(drivingLicense)).thenReturn(true);
+        when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
+
+        final var actual = service.save(drivingLicense);
+
+        assertThat(actual.getAvailablePoints()).isEqualTo(12);
+        verify(database).save(id, drivingLicense);
+        verifyNoMoreInteractions(database);
+        verifyNoMoreInteractions(serviceValidator);
+    }
+
 }
