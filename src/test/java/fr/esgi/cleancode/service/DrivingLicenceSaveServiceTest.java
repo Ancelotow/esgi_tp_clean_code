@@ -29,6 +29,9 @@ public class DrivingLicenceSaveServiceTest {
     @Mock
     private DrivingLicenceIdGenerationService serviceIdGenerator;
 
+    @Mock
+    private DrivingLicenceValidatorService serviceValidator;
+
     @Test
     void should_check_return() {
         String securitySocialNumber = "123456789123456";
@@ -37,6 +40,7 @@ public class DrivingLicenceSaveServiceTest {
 
         when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
         when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
+        when(serviceValidator.isValidSSNumber(drivingLicense)).thenReturn(true);
 
         final var actual = service.save(drivingLicense);
 
@@ -44,6 +48,7 @@ public class DrivingLicenceSaveServiceTest {
         verify(database).findById(id);
         verifyNoMoreInteractions(database);
         verifyNoMoreInteractions(serviceIdGenerator);
+        verifyNoMoreInteractions(serviceValidator);
     }
 
     @Test
@@ -54,6 +59,7 @@ public class DrivingLicenceSaveServiceTest {
 
         when(database.save(id, drivingLicense)).thenReturn(drivingLicense);
         when(serviceIdGenerator.generateNewDrivingLicenceId()).thenReturn(id);
+        when(serviceValidator.isValidSSNumber(drivingLicense)).thenReturn(true);
 
         final var actual = service.save(drivingLicense);
 
@@ -61,6 +67,7 @@ public class DrivingLicenceSaveServiceTest {
         verify(database).findById(id);
         verifyNoMoreInteractions(database);
         verifyNoMoreInteractions(serviceIdGenerator);
+        verifyNoMoreInteractions(serviceValidator);
     }
 
 }
