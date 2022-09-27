@@ -2,6 +2,7 @@ package fr.esgi.cleancode.service;
 
 import fr.esgi.cleancode.database.InMemoryDatabase;
 import fr.esgi.cleancode.exception.InvalidDriverSocialSecurityNumberException;
+import fr.esgi.cleancode.exception.ResourceNotFoundException;
 import fr.esgi.cleancode.model.DrivingLicence;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,9 +53,8 @@ public class DrivingLicenceRemoverPointsServiceTest {
 
         when(serviceFinder.findById(id)).thenReturn(null);
 
-        assertThatExceptionOfType(InvalidDriverSocialSecurityNumberException.class).isThrownBy(() -> service.removePoints(3, id));
+        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> service.removePoints(3, id));
         verifyNoMoreInteractions(serviceFinder);
-
     }
 
 }
