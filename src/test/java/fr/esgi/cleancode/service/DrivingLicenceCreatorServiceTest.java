@@ -46,8 +46,7 @@ public class DrivingLicenceCreatorServiceTest {
 
         assertThat(actual).isEqualTo(drivingLicense);
         verify(database).save(id, drivingLicense);
-        verifyNoMoreInteractions(database);
-        verifyNoMoreInteractions(serviceValidator);
+        verifyNoMoreInteractions(database, serviceValidator);
     }
 
     @Test

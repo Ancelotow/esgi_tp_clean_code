@@ -28,7 +28,7 @@ public class DrivingLicenceValidatorServiceTest {
     @ValueSource(strings = {"12345678A123456", "123344", "12376876876876878678678344", "A"})
     void should_not_validated(String securitySocialNumber) {
         val drivingLicence =  DrivingLicence.builder().driverSocialSecurityNumber(securitySocialNumber).build();
-        assertThatExceptionOfType(InvalidDriverSocialSecurityNumberException.class).isThrownBy(() -> service.isValidSSNumber(drivingLicence));
+        assertThat(service.isValidSSNumber(drivingLicence)).isFalse();
     }
 
 }

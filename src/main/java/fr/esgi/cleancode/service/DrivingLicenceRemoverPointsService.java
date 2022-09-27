@@ -15,22 +15,23 @@ public class DrivingLicenceRemoverPointsService {
 
     private final InMemoryDatabase database;
 
-    public DrivingLicence removePoints(int points, UUID id) throws ResourceNotFoundException {
+    public DrivingLicence removePointsById(int pointsToRemove, UUID id) throws ResourceNotFoundException {
         val licenceDrivingOpt = serviceFinder.findById(id);
         if (licenceDrivingOpt.isEmpty()) {
             throw new ResourceNotFoundException("La licence n'existe pas");
         }
         var licenceDriving = licenceDrivingOpt.get();
-        var currentPoints = licenceDriving.getAvailablePoints() - points;
-        if (currentPoints < 0) {
-            currentPoints = 0;
-        }
-        licenceDriving = DrivingLicence.builder()
-                .driverSocialSecurityNumber(licenceDriving.getDriverSocialSecurityNumber())
-                .availablePoints(currentPoints)
-                .id(id)
-                .build();
+        var currentPoints = removePoints(pointsToRemove, licenceDriving.getAvailablePoints());
+        licenceDriving = licenceDriving.withAvailablePoints(currentPoints);
         return database.save(id, licenceDriving);
+    }
+
+    public int removePoints(int pointToRemove, int currentPoint) {
+        var newPoints = currentPoint - pointToRemove;
+        if(newPoints < 0) {
+            newPoints = 0;
+        }
+        return newPoints;
     }
 
 }

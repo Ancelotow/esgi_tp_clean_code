@@ -43,41 +43,40 @@ public class DrivingLicenceRemoverPointsServiceTest {
     void should_remove_points() {
         final var id = UUID.randomUUID();
         String securitySocialNumber = "123456789123456";
-        final var points = 4;
+        final var pointsToRemove = 4;
         final var drivingLicense = DrivingLicence.builder().id(id).driverSocialSecurityNumber(securitySocialNumber).build();
 
         when(serviceFinder.findById(id)).thenReturn(Optional.ofNullable(drivingLicense));
         when(database.save(eq(id), any(DrivingLicence.class))).thenReturn(drivingLicense);
 
-        final var actual = service.removePoints(points, id);
+        final var actual = service.removePointsById(pointsToRemove, id);
 
         verify(database).save(eq(id), entityCaptor.capture());
         verifyNoMoreInteractions(serviceFinder);
         verifyNoMoreInteractions(database);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(drivingLicense);
-        assertThat(entityCaptor.getValue().getAvailablePoints()).usingRecursiveComparison().isEqualTo(12 - points);
-
+        assertThat(entityCaptor.getValue().getAvailablePoints()).usingRecursiveComparison().isEqualTo(8);
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {2, 12, 19})
-    void should_remove_points_greater_than_zero(int points) {
+    @Test
+    void should_remove_all_points() {
         final var id = UUID.randomUUID();
         String securitySocialNumber = "123456789123456";
+        final var pointsToRemove = 100;
         final var drivingLicense = DrivingLicence.builder().id(id).driverSocialSecurityNumber(securitySocialNumber).build();
 
         when(serviceFinder.findById(id)).thenReturn(Optional.ofNullable(drivingLicense));
         when(database.save(eq(id), any(DrivingLicence.class))).thenReturn(drivingLicense);
 
-        final var actual = service.removePoints(points, id);
+        final var actual = service.removePointsById(pointsToRemove, id);
 
         verify(database).save(eq(id), entityCaptor.capture());
         verifyNoMoreInteractions(serviceFinder);
         verifyNoMoreInteractions(database);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(drivingLicense);
-        assertThat(entityCaptor.getValue().getAvailablePoints()).isGreaterThanOrEqualTo(0);
+        assertThat(entityCaptor.getValue().getAvailablePoints()).usingRecursiveComparison().isEqualTo(0);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class DrivingLicenceRemoverPointsServiceTest {
 
         when(serviceFinder.findById(id)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> service.removePoints(3, id));
+        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() -> service.removePointsById(3, id));
         verifyNoMoreInteractions(serviceFinder);
     }
 
